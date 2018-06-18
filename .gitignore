@@ -1,0 +1,11 @@
+build/
+.vs/
+.vscode/
+.idea/
+cmake-build-debug/
+cmake-build-release/
+
+*.exe
+*.dll
+*.so
+*.a
