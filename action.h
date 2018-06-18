@@ -9,10 +9,10 @@ namespace tstraus
     {
     public:
         // adds a function to the action
-        template<typename Functor>
-        uint32_t operator += (Functor&& f)
+        template<typename Function>
+        uint32_t operator += (Function&& f)
         {
-            actions[nextID] = std::forward<Functor>(f);
+            actions[nextID] = std::forward<Function>(f);
 
             return nextID++;
         }
