@@ -6,25 +6,105 @@
 using namespace std;
 using namespace tstraus;
 
-int main()
+// setup the test fixture
+class ActionTests : public testing::Test
 {
+protected:
+    virtual void SetUp()
+    {
+        x = 0;
+
+        action += [&] {
+            x += 1;
+        };
+    }
+
+    virtual void TearDown()
+    {
+        action.clear();
+    }
+
     Action<void()> action;
 
-    action += [] { // add a function the the action
-        cout << "asdf" << endl;
+    int x;
+};
+
+// make sure the function added in the fixture is called
+TEST_F(ActionTests, AddMemberOperator)
+{
+    action();
+
+    EXPECT_EQ(1, x);
+    EXPECT_NE(0, x);
+}
+
+// verify multiple functions are called
+TEST_F(ActionTests, MutipleFunctions)
+{
+    action += [&] {
+        x += 2;
     };
 
-    auto id = action += [] { // save the id so we can remove it at a later time
-        cout << "fdsa" << endl;
+    action();
+
+    EXPECT_EQ(3, x);
+    EXPECT_NE(1, x);
+}
+
+// remove a function when provided the id
+TEST_F(ActionTests, RemoveMemberOperator)
+{
+    auto id = action += [&] {
+        x += 4;
     };
 
-    action(); // execute the action
+    action -= id;
 
-    cout << "---------" << endl;
+    action();
 
-    action -= id; // remove one of the functions we put in
+    EXPECT_EQ(1, x);
+    EXPECT_NE(5, x);
+}
 
-    action(); // call the remaining functions
+// set the action with only one function
+TEST_F(ActionTests, MakeOnlyOperator)
+{
+    action = [&] {
+        x += 4;
+    };
 
-    return 0;
+    action();
+
+    EXPECT_EQ(4, x);
+    EXPECT_NE(1, x);
+    EXPECT_NE(5, x);
+}
+
+// clear the action
+TEST_F(ActionTests, Clear)
+{
+    action.clear();
+
+    action();
+
+    EXPECT_EQ(0, x);
+    EXPECT_NE(1, x);
+}
+
+// non fixture tests
+// be sure the action gives arguments
+TEST(OtherActionTests, StringAction)
+{
+    string s = "";
+
+    Action<void(string)> action;
+
+    action += [&] (string input) {
+        s = input;
+    };
+
+    action("asdf");
+
+    EXPECT_EQ("asdf", s);
+    EXPECT_NE("", s);
 }

@@ -9,15 +9,26 @@ namespace tstraus
     class Action
     {
     public:
+        // make the given function the only one in the action
+        template<typename Function>
+        void operator = (Function&& f)
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+
+            actions.clear();
+
+            actions[0] = std::forward<Function>(f);
+        }
+
         // adds a function to the action
         template<typename Function>
         uint32_t operator += (Function&& f)
         {
             std::lock_guard<std::mutex> lock(mtx);
 
-            actions[nextID] = std::forward<Function>(f);
+            actions[++nextID] = std::forward<Function>(f);
 
-            return nextID++;
+            return nextID;
         }
 
         // remove the function with the given id from the action
@@ -36,6 +47,15 @@ namespace tstraus
 
             for(auto& f : actions)
                 f.second(args...);
+        }
+
+        // clear the functions in the action
+        void clear()
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+
+            nextID = 0;
+            actions.clear();
         }
 
     private:
