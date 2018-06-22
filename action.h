@@ -45,7 +45,7 @@ namespace tstraus
         {
             std::lock_guard<std::mutex> lock(mtx);
 
-            for(auto& f : actions)
+            for (auto& f : actions)
                 f.second(args...);
         }
 

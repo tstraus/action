@@ -1,14 +1,12 @@
 #include "action.h"
 #include "lest.hpp"
 
-#include <iostream>
-
 using namespace std;
 using namespace tstraus;
 
 const lest::test t[] =
 {
-	// fixture for most tests
+    // fixture for most tests
     CASE("BasicTests" "[tstraus::Action]")
     {
         SETUP("Set up an Action")
@@ -20,16 +18,15 @@ const lest::test t[] =
                 x += 1;
             };
 
-			// make sure the function added in the fixture is called
+            // make sure the function added in the fixture is called
             SECTION("Add Member Operator")
             {
                 action();
 
                 EXPECT(x == 1);
-				EXPECT_NOT(x == 0);
             }
 
-			// verify multiple functions are called
+            // verify multiple functions are called
             SECTION("Mutiple Functions")
             {
                 action += [&] {
@@ -39,71 +36,65 @@ const lest::test t[] =
                 action();
 
                 EXPECT(x == 3);
-				EXPECT_NOT(x == 1);
             }
 
-			// remove a function when provided the id
-			SECTION("Remove Member Operator")
-			{
-				auto id = action += [&] {
-					x += 4;
-				};
+            // remove a function when provided the id
+            SECTION("Remove Member Operator")
+            {
+                auto id = action += [&] {
+                    x += 4;
+                };
 
-				action -= id;
+                action -= id;
 
-				action();
+                action();
 
-				EXPECT(x == 1);
-				EXPECT_NOT(x == 5);
-			}
+                EXPECT(x == 1);
+            }
 
-			// set the action with only one function
-			SECTION("Make Only Operator")
-			{
-				action = [&] {
-					x += 4;
-				};
+            // set the action with only one function
+            SECTION("Make Only Operator")
+            {
+                action = [&] {
+                    x += 4;
+                };
 
-				action();
+                action();
 
-				EXPECT(x == 4);
-				EXPECT_NOT(x == 1);
-				EXPECT_NOT(x == 5);
-			}
+                EXPECT(x == 4);
+            }
 
-			// clear the action
-			SECTION("Clear")
-			{
-				action.clear();
+            // clear the action
+            SECTION("Clear")
+            {
+                action.clear();
 
-				action();
+                action();
 
-				EXPECT(x == 0);
-				EXPECT_NOT(x == 1);
-			}
+                EXPECT(x == 0);
+            }
         }
-	},
+    },
 
-	// be sure that arguments are passed through
-	CASE("String Action" "[tstraus::Action]")
-	{
-		string s = "";
+    // be sure that arguments are passed through
+    CASE("String Action" "[tstraus::Action]")
+    {
+        string s = "";
 
-		Action<void(string)> action;
+        Action<void(string)> action;
 
-		action += [&](string input) {
-			s = input;
-		};
+        action += [&](string input) {
+            s = input;
+        };
 
-		action("asdf");
+        action("asdf");
 
-		EXPECT(s == "asdf");
-		EXPECT_NOT(s == "");
-	}
+        EXPECT(s == "asdf");
+    }
 };
 
 // run with '-p' to see each test
 int main(int argc, char** argv)
 {
-	return lest::run(t, argc, argv);
+    return lest::run(t, argc, argv);
 }
