@@ -73,6 +73,25 @@ const lest::test t[] =
 
                 EXPECT(x == 0);
             }
+
+            // combine together
+            SECTION("Combine")
+            {
+                Action<void()> a, b;
+
+                a += [&] {
+                    x += 1;
+                };
+
+                b += [&] {
+                    x += 2;
+                };
+
+                auto c = a + b;
+                c();
+
+                EXPECT(x == 3);
+            }
         }
     },
 

@@ -49,6 +49,22 @@ namespace tstraus
                 f.second(args...);
         }
 
+        Action<Signature> operator + (Action<Signature>& a)
+        {
+            std::lock_guard<std::mutex> l1(mtx);
+            std::lock_guard<std::mutex> l2(a.mtx);
+
+            Action<Signature> out;
+
+            for (auto& i : actions)
+                out += i.second;
+
+            for (auto& i : a.actions)
+                out += i.second;
+
+            return out;
+        }
+
         // clear the functions in the action
         void clear()
         {
