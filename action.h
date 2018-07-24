@@ -11,7 +11,7 @@ namespace tstraus
     {
     public:
         // default constructor
-        Action(uint32_t id = 0) : nextID(id), mtx(std::unique_ptr<std::mutex>(new std::mutex())) {}
+        Action(uint32_t id = 1) : nextID(id), mtx(std::unique_ptr<std::mutex>(new std::mutex())) {}
 
         // make the given function the only one in the action
         template<typename Function>
@@ -74,7 +74,7 @@ namespace tstraus
         {
             std::lock_guard<std::mutex> lock(*mtx);
 
-            nextID = 0;
+            nextID = 1;
             actions.clear();
         }
 
