@@ -1,3 +1,6 @@
+#ifndef __ACTION_H__
+#define __ACTION_H__
+
 #include <unordered_map>
 #include <functional>
 #include <utility>
@@ -86,3 +89,5 @@ namespace tstraus
         std::unordered_map<uint32_t, std::function<Signature>> actions;
     };
 }
+
+#endif // __ACTION_H__
